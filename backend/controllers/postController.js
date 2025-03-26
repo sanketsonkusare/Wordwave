@@ -27,7 +27,36 @@ const getAllPosts = async (req, res) => {
     }
 };
 
+// Likes count
+const toggleLike = async (req, res) => {
+    try {
+        const { id } = req.params;  // Get Post ID from URL
+        const userId = req.user.id;  // Get User ID from JWT token
+
+        const post = await Post.findById(id);
+        if (!post) return res.status(404).json({ message: "Post not found" });
+
+        // Check if user already liked the post
+        const isLiked = post.likes.includes(userId);
+
+        if (isLiked) {
+            // If already liked, remove like (Unlike)
+            post.likes = post.likes.filter(uid => uid.toString() !== userId);
+        } else {
+            // If not liked, add like
+            post.likes.push(userId);
+        }
+
+        await post.save();  // Save changes
+
+        res.status(200).json({ likes: post.likes.length });  // Send updated like count
+    } catch (error) {
+        res.status(500).json({ message: "Error toggling like", error: error.message });
+    }
+};
+
 module.exports = {
     createPost,
-    getAllPosts
+    getAllPosts,
+    toggleLike
 };
