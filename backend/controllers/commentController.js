@@ -5,19 +5,16 @@ const Post = require('../models/Post');
 exports.addComment = async (req, res) => {
     try {
         const { postId, comment } = req.body;
-        const userId = req.user.id;  // Get user ID from JWT
-        const username = req.user.username;  // Get username from JWT
+        const userId = req.user.id;  
+        const username = req.user.username; 
 
-        // Check if the post exists
         const post = await Post.findById(postId);
         if (!post) return res.status(404).json({ message: "Post not found" });
 
-        // ✅ Make sure "comment" exists in request body
         if (!comment || comment.trim() === "") {
             return res.status(400).json({ message: "Comment text is required" });
         }
 
-        // ✅ Create and save the comment
         const newComment = new Comment({ postId, userId, username, comment });
         await newComment.save();
 
