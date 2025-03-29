@@ -27,6 +27,17 @@ const getAllPosts = async (req, res) => {
     }
 };
 
+const getSinglePost = async (req, res) => {
+    const { id } = req.params;
+    try {
+        const post = await Post.findById(id);
+        if (!post) return res.status(404).json({message: "Post not found" });
+        res.status(200).json(post);
+    } catch (error) {
+        res.status(500).json({message: "Error fetching post", error: error.message });
+    }
+};
+
 // Likes count
 const toggleLike = async (req, res) => {
     try {
@@ -58,5 +69,6 @@ const toggleLike = async (req, res) => {
 module.exports = {
     createPost,
     getAllPosts,
-    toggleLike
+    toggleLike,
+    getSinglePost
 };

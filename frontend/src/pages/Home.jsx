@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 export default function Home() {
 
     const [Posts, setPosts] = useState([]);
@@ -21,9 +22,11 @@ export default function Home() {
             <div key={post._id} className="border p-4 rounded-lg shadow-md">
               <h2 className="text-xl font-semibold">{post.title}</h2>
               <p className="text-gray-600">{post.content.substring(0, 100)}...</p>
+              <Link to = {`/post/${post._id}`}>
               <button className="mt-2 px-4 py-2 bg-blue-500 text-white rounded">
                 Read More
               </button>
+              </Link>
             </div>
           ))}
         </div>
