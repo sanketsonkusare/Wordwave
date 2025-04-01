@@ -1,6 +1,6 @@
 import { useContext } from "react";
-import { Link } from "react-router-dom";
-import AuthContext from "../context/AuthContext";
+import { Link, useNavigate } from "react-router-dom";
+import AuthContext from "../AuthContext";
 
 export default function Navbar() {
   const { user, logout } = useContext(AuthContext);
@@ -13,6 +13,9 @@ export default function Navbar() {
         {user ? (
           <>
             <span className="mr-4">Welcome!</span>
+            <Link to="/create-post" className="bg-blue-500 px-4 py-2 rounded-md">
+             Create Post
+            </Link>
             <button onClick={logout} className="bg-red-500 px-4 py-2 rounded">
               Logout
             </button>

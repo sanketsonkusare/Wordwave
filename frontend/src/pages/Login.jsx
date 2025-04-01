@@ -21,10 +21,11 @@ export default function Login() {
 
             const data = await response.json();
             if (response.ok) {
-                alert("Login successful");
+                localStorage.setItem("token", data.token);
+                localStorage.setItem("user", JSON.stringify(data.user)); 
                 navigate("/");
             } else{
-                alert(data.message);
+                alert(data.message || "Login failed");
             }
         } catch(error) {
             console.error("Error logging in: ", error);
