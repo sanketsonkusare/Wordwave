@@ -3,7 +3,13 @@ const Post = require('../models/Post');
 // Create a new post
 const createPost = async (req, res) => {
     try {
-        const { title, content, image, author } = req.body;
+        const { title, content, image } = req.body;
+        const author = req.user.id;
+
+        if(!title || !content) {
+            return res.status(400).json({message: "Title and content are required"});
+        }
+
         const newPost = new Post({
             title,
             content,
@@ -14,6 +20,7 @@ const createPost = async (req, res) => {
         res.status(201).json(newPost);
     } catch (error) {
         res.status(500).json({ message: "Error creating post", error: error.message });
+        console.log(error.message);
     }
 };
 

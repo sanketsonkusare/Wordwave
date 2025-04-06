@@ -17,7 +17,7 @@ export default function CreatePost() {
                 "content-Type": "application/json",
                 "Authorization" : `Bearer ${token}`,
             },
-            body: JSON.stringify({Title, Content, Image})
+            body: JSON.stringify({title: Title,content: Content,image: Image})
         });
 
         const data = await response.json();
