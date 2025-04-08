@@ -6,13 +6,19 @@ export default function Post() {
   const [post, setPost] = useState();
   const [comments, setComments] = useState(); 
   const [newComment, setNewComment] = useState();
+  const [likes, setLikes] = useState();
+  const token = localStorage.getItem("token");
+  const userIdFromToken = token ? JSON.parse(atob(token.split(".")[1])).userId : null;
+  const hasLiked = userIdFromToken ? likes.includes(userIdFromToken) : false;
+
 
   useEffect(() => {
     fetch(`http://localhost:5000/posts/${id}`)
       .then((res) => res.json())
       .then((data) => {
         setPost(data);
-        setComments(data.comments || []); 
+        setComments(data.comments || []);
+        setLikes(data.likes || []);
       })
       .catch((err) => console.error("Error fetching post:", err));
   }, [id]);
@@ -49,12 +55,44 @@ export default function Post() {
     }
   };
 
+  const handleLike = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) return alert("You need to login to like the post");
+  
+    try {
+      const response = await fetch(`http://localhost:5000/api/posts/${id}/like`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+  
+      const updatedPost = await response.json();
+      setLikes(updatedPost.likes);
+    } catch (error) {
+      console.error("Failed to toggle like on the post", error);
+    }
+  };
+  
+
   if (!post) return <p className="text-center mt-6">Loading...</p>;
 
   return (
     <div className="max-w-4xl mx-auto p-6">
-      <h1 className="text-3xl font-bold mb-4">{post.title}</h1>
+      <h1 className="text-3xl font-bold mb-4">{post.title}</h1> 
+      <button
+  onClick={handleLike}
+  className={`mt-2 px-4 py-2 rounded flex items-center justify-center ${
+    hasLiked ? "bg-red-500 text-white" : "bg-white text-red-500 border border-red-500"
+  }`}
+>
+  {hasLiked ? "❤️ Unlike" : "🤍 Like"} {likes.length}
+</button>
       <img src={post.image} alt="Blog Cover" className="w-full rounded-lg" />
+      <button onClick={handleLike} className="mt-2 bg-blue-500 text-white px-4 py-2 rounded">
+        ❤️ {likes.length} {likes.length === 1 ? 'Like' : 'Likes'}
+      </button>
       <p className="mt-4 text-lg">{post.content}</p>
 
       <div className="mt-6">
