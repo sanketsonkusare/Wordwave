@@ -7,8 +7,8 @@ const authRoutes = require('./routes/authRoutes');
 const commentRoutes = require('./routes/commentRoutes');
 
 
-dotenv.config(); // Load environment variables
-connectDB(); // Connect to MongoDB
+dotenv.config();
+connectDB();
 
 const app = express();
 app.use(express.json());

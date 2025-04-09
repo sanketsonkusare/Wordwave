@@ -4,8 +4,8 @@ import { useParams } from "react-router-dom";
 export default function Post() {
   const { id } = useParams(); 
   const [post, setPost] = useState();
-  const [comments, setComments] = useState(); 
-  const [newComment, setNewComment] = useState();
+  const [comments, setComments] = useState([]); 
+  const [newComment, setNewComment] = useState("");
   const [likes, setLikes] = useState();
   const token = localStorage.getItem("token");
   const userIdFromToken = token ? JSON.parse(atob(token.split(".")[1])).userId : null;
@@ -33,19 +33,19 @@ export default function Post() {
     }
 
     try {
-      const response = await fetch(`http://localhost:5000/api/posts/${id}/comment`, {
+      const response = await fetch(`http://localhost:5000/comments/${id}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ text: newComment }),
+        body: JSON.stringify({ comment: newComment }),
       });
 
       const data = await response.json();
 
       if (response.ok) {
-        setComments([...comments, data]); 
+        setComments([data, ...comments]); 
         setNewComment("");
       } else {
         alert(data.message);
@@ -96,33 +96,33 @@ export default function Post() {
       <p className="mt-4 text-lg">{post.content}</p>
 
       <div className="mt-6">
-        <h2 className="text-xl font-semibold">Comments</h2>
-        {comments.length === 0 ? (
-          <p>No comments yet. Be the first to comment!</p>
-        ) : (
-          <ul>
+    <h2 className="text-xl font-semibold">Comments</h2>
+    {comments.length === 0 ? (
+        <p>No comments yet. Be the first to comment!</p>
+    ) : (
+        <ul>
             {comments.map((comment, index) => (
-              <li key={index} className="border-b py-2">
-                <strong>{comment.username}</strong>: {comment.text}
-              </li>
+                <li key={index} className="border-b py-2">
+                    <strong>{comment.username}</strong>: {comment.comment}
+                </li>
             ))}
-          </ul>
-        )}
-      </div>
+        </ul>
+    )}
 
-      <form onSubmit={handleCommentSubmit} className="mt-4">
+    <form onSubmit={handleCommentSubmit} className="mt-4">
         <input
-          type="text"
-          className="border p-2 w-full rounded"
-          placeholder="Write a comment..."
-          value={newComment}
-          onChange={(e) => setNewComment(e.target.value)}
-          required
+            type="text"
+            className="border p-2 w-full rounded"
+            placeholder="Write a comment..."
+            value={newComment}
+            onChange={(e) => setNewComment(e.target.value)}
+            required
         />
         <button type="submit" className="mt-2 px-4 py-2 bg-green-500 text-white rounded">
-          Add Comment
+            Add Comment
         </button>
-      </form>
+    </form>
+</div>
     </div>
   );
 }

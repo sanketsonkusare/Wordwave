@@ -4,7 +4,8 @@ const Post = require('../models/Post');
 
 exports.addComment = async (req, res) => {
     try {
-        const { postId, comment } = req.body;
+        const { postId } = req.params;
+        const { comment } = req.body;
         const userId = req.user.id;  
         const username = req.user.username; 
 
