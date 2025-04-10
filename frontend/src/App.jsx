@@ -5,6 +5,7 @@ import Post from './pages/Post';
 import Login from './pages/Login';
 import CreatePost from './pages/CreatePost';
 import Signup from './pages/Signup';
+import Footer from './pages/Footer';
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { AuthProvider } from './AuthContext';
 import PrivateRoute from './PrivateRoute';
@@ -26,6 +27,7 @@ function App() {
         <Route path='/login' element={<Login/>}/>
         <Route path='/signup' element={<Signup/>}/>
       </Routes>
+      <Footer/>
       </BrowserRouter>
       </AuthProvider>
     </>
