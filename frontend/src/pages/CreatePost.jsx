@@ -29,37 +29,40 @@ export default function CreatePost() {
         }
     }
     return (
-        <>
-            <div className="max-w-lg mx-auto mt-10 p-6 bg-white shadow-lg rounded-lg">
-      <h2 className="text-2xl font-bold mb-4">Create a New Post</h2>
-      <form onSubmit={handleCreatePost}>
-        <input
-          type="text"
-          placeholder="Title"
-          className="w-full p-2 border rounded mb-3"
-          value={Title}
-          onChange={(e) => setTitle(e.target.value)}
-          required
-        />
-        <textarea
-          placeholder="Content"
-          className="w-full p-2 border rounded mb-3"
-          value={Content}
-          onChange={(e) => setContent(e.target.value)}
-          required
-        />
-        <input
-          type="text"
-          placeholder="Image URL"
-          className="w-full p-2 border rounded mb-3"
-          value={Image}
-          onChange={(e) => setImage(e.target.value)}
-        />
-        <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded">
-          Create Post
-        </button>
-      </form>
-    </div>
-        </>
+      <div className="flex items-center justify-center bg-[#0a0018]">
+        <div className="max-w-lg w-full p-6 mt-16 bg-[#0a0018] shadow-lg rounded-xl">
+          <h2 className="text-3xl font-bold text-center mb-6">Create a New Post</h2>
+          <form onSubmit={handleCreatePost} className="flex flex-col gap-4">
+            <input
+              type="text"
+              placeholder="Title"
+              className="border p-3 w-full rounded-lg"
+              value={Title}
+              onChange={(e) => setTitle(e.target.value)}
+              required
+            />
+            <textarea
+              placeholder="Content"
+              className="border p-3 w-full rounded-lg"
+              value={Content}
+              onChange={(e) => setContent(e.target.value)}
+              required
+            />
+            <input
+              type="text"
+              placeholder="Image URL"
+              className="border p-3 w-full rounded-lg"
+              value={Image}
+              onChange={(e) => setImage(e.target.value)}
+            />
+            <button
+              type="submit"
+              className="w-full px-6 py-3 bg-[#3b3346] text-white rounded-full hover:bg-[#4c3e57] transition text-center"
+            >
+              Create Post
+            </button>
+          </form>
+        </div>
+      </div>
     );
 }

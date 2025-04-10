@@ -8,6 +8,7 @@ import Register from './pages/Register';
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { AuthProvider } from './AuthContext';
 import PrivateRoute from './PrivateRoute';
+import ErrorBoundary from "./ErrorBoundary";
 
 function App() {
   
@@ -20,7 +21,7 @@ function App() {
       <Routes>
         <Route path='/' element={<Home/>}/>
         <Route path="/create-post" element={<CreatePost />} />
-        <Route path='/post/:id' element={<Post/>}/>
+        <Route path='/post/:id' element={<ErrorBoundary><Post/></ErrorBoundary>}/>
         <Route path='/create' element={<PrivateRoute><CreatePost/></PrivateRoute>}/>
         <Route path='/login' element={<Login/>}/>
         <Route path='/register' element={<Register/>}/>

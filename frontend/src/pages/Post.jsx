@@ -6,12 +6,11 @@ export default function Post() {
   const [post, setPost] = useState();
   const [comments, setComments] = useState([]); 
   const [newComment, setNewComment] = useState("");
-  const [likes, setLikes] = useState();
+  const [likes, setLikes] = useState([]);
   const token = localStorage.getItem("token");
-  const userIdFromToken = token ? JSON.parse(atob(token.split(".")[1])).userId : null;
-  const hasLiked = userIdFromToken ? likes.includes(userIdFromToken) : false;
-
-
+  const userIdFromToken = token ? JSON.parse(atob(token.split(".")[1])).id : null;
+  const hasLiked = userIdFromToken ? likes.map(String).includes(userIdFromToken) : false;
+  
   useEffect(() => {
     fetch(`http://localhost:5000/posts/${id}`)
       .then((res) => res.json())
@@ -112,55 +111,72 @@ export default function Post() {
   
 
   if (!post) return <p className="text-center mt-6">Loading...</p>;
+  if (!likes) return <p className="text-center mt-6">Loading likes...</p>;
+  if (!comments) return <p className="text-center mt-6">Loading comments...</p>;
 
   return (
     <div className="max-w-4xl mx-auto p-6">
-      <h1 className="text-3xl font-bold mb-4">{post.title}</h1> 
-      <img src={post.image} alt="Blog Cover" className="w-full rounded-lg" />
-      <div
-        onClick={handleLike}
-        className={`mt-2 px-4 py-2 rounded flex items-center justify-center ${
-          hasLiked ? "bg-red-500 text-white glow" : "bg-white text-red-500 border border-red-500"}`}>
-          {hasLiked ? "❤️" : "🤍"} {likes.length}
+      <h1 className="text-4xl font-bold text-center my-6">{post.title}</h1> 
+      <img src={post.image} alt="Blog Cover" className="w-full h-110 object-cover rounded-2xl" />
+      <div className="flex justify-end">
+        <div onClick={handleLike} className="mt-4 ml-auto cursor-pointer flex items-center">
+          {hasLiked ? (
+            <i className="fa-solid fa-heart text-red-500"></i>
+          ) : (
+            <i className="fa-regular fa-heart text-gray-300"></i> 
+          )}
+          <span className="ml-2">{likes.length}</span>
+        </div>
       </div>
-      <p className="mt-4 text-lg">{post.content}</p>
+      <p className="mt-4 text-lg text-left" >{post.content}</p>
 
       <div className="mt-6">
-    <h2 className="text-xl font-semibold">Comments</h2>
-    {comments.length === 0 ? (
-        <p>No comments yet. Be the first to comment!</p>
-    ) : (
-        <ul>
+        <h2 className="text-xl text-left font-semibold mt-8 mb-4">Comments:</h2>
+        {comments.length === 0 ? (
+          <p>No comments yet. Be the first to comment!</p>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {comments.map((comment, index) => (
-                <li key={index} className="border-b py-2 flex justify-between items-center">
-                  <div>
-                    <strong>{comment.username}</strong>: {comment.comment}
-                  </div>
-                  {comment.useId === userIdFromToken && (
-                    <button onClick={() => handleDeleteComment(comment._id)}
-                    className="text-red-500 hover:underline">
-                      Delete
-                    </button>
-                  )}
-                </li>
+              <div
+                key={index}
+                className="border p-4 rounded-xl shadow-md bg-[#0a0018] flex flex-col justify-between text-left"
+              >
+                <div className="mb-2">
+                  <strong className="block text-white mb-2">{comment.username}</strong>
+                  <p className="text-white-300">{comment.comment}</p>
+                </div>
+                {comment.userId === userIdFromToken && (
+                  <button
+                    onClick={() => handleDeleteComment(comment._id)}
+                    className="text-red-500 hover:underline self-end"
+                  >
+                    Delete
+                  </button>
+                )}
+              </div>
             ))}
-        </ul>
-    )}
+          </div>
+        )}
 
-    <form onSubmit={handleCommentSubmit} className="mt-4">
-        <input
-            type="text"
-            className="border p-2 w-full rounded"
-            placeholder="Write a comment..."
-            value={newComment}
-            onChange={(e) => setNewComment(e.target.value)}
-            required
-        />
-        <button type="submit" className="mt-2 px-4 py-2 bg-green-500 text-white rounded">
-            Add Comment
-        </button>
-    </form>
-</div>
+        <form onSubmit={handleCommentSubmit} className="mt-8 flex flex-col items-left">
+          <div className="flex flex-col sm:flex-row gap-4 w-full max-w-lg">
+            <input
+              type="text"
+              className="border p-3 w-full rounded-xl"
+              placeholder="Write a comment..."
+              value={newComment}
+              onChange={(e) => setNewComment(e.target.value)}
+              required
+            />
+            <button
+              type="submit"
+              className="px-6 py-2 bg-[#3b3346] text-white rounded-xl hover:bg-[#4c3e57] transition text-center"
+            >
+              Add
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }

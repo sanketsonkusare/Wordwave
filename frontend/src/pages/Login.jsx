@@ -34,14 +34,33 @@ export default function Login() {
     };
     return (
         <>
-             <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-md">
-      <h2 className="text-2xl font-bold text-center">Login</h2>
-      <form onSubmit={handleSubmit} className="mt-4">
-        <input type="email" name="email" placeholder="Email" onChange={handleChange} className="border p-2 w-full rounded mb-2" required />
-        <input type="password" name="password" placeholder="Password" onChange={handleChange} className="border p-2 w-full rounded mb-2" required />
-        <button type="submit" className="w-full bg-green-500 text-white p-2 rounded">Login</button>
-      </form>
-    </div>
+            <div className="max-w-md mx-auto mt-16 p-6 bg-[#0a0018] rounded-xl shadow-lg">
+                <h2 className="text-3xl font-bold text-center mb-6">Login</h2>
+                <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+                    <input
+                    type="email"
+                    name="email"
+                    placeholder="Email"
+                    onChange={handleChange}
+                    className="border p-3 w-full rounded-lg"
+                    required
+                    />
+                    <input
+                    type="password"
+                    name="password"
+                    placeholder="Password"
+                    onChange={handleChange}
+                    className="border p-3 w-full rounded-lg"
+                    required
+                    />
+                    <button
+                    type="submit"
+                    className="w-full px-6 py-3 bg-[#3b3346] text-white rounded-full hover:bg-[#4c3e57] transition text-center"
+                    >
+                    Login
+                    </button>
+                </form>
+            </div>
         </>
     );
 }
