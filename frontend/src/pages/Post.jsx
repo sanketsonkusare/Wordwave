@@ -21,6 +21,13 @@ export default function Post() {
         setLikes(data.likes || []);
       })
       .catch((err) => console.error("Error fetching post:", err));
+
+    fetch(`http://localhost:5000/comments/${id}`)
+      .then((res) => res.json())
+      .then((data) => {
+        setComments(data || []);
+      })
+      .catch((err) => console.error("Error fetching comments", err));
   }, [id]);
 
   const handleCommentSubmit = async (e) => {
@@ -52,6 +59,30 @@ export default function Post() {
       }
     } catch (error) {
       console.error("Error adding comment:", error);
+    }
+  };
+
+  const handleDeleteComment = async (commentId) => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("You must be logged in to delete a comment");
+      return;
+    }
+    try {
+      const response = await fetch(`http://localhost:5000/comments/${commentId}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (response.ok) {
+        setComments(comments.filter((comment) => comment._id !== commentId));
+      } else {
+        const data = await response.json();
+        alert(data.message || "Failed to delete comment");
+      }
+    } catch (error) {
+      console.error("Error deleting comment: ",error);
     }
   };
 
@@ -102,8 +133,16 @@ export default function Post() {
     ) : (
         <ul>
             {comments.map((comment, index) => (
-                <li key={index} className="border-b py-2">
+                <li key={index} className="border-b py-2 flex justify-between items-center">
+                  <div>
                     <strong>{comment.username}</strong>: {comment.comment}
+                  </div>
+                  {comment.useId === userIdFromToken && (
+                    <button onClick={() => handleDeleteComment(comment._id)}
+                    className="text-red-500 hover:underline">
+                      Delete
+                    </button>
+                  )}
                 </li>
             ))}
         </ul>

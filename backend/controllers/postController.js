@@ -47,8 +47,8 @@ const getSinglePost = async (req, res) => {
 
 // Likes count
 const toggleLike = async (req, res) => {
-    const { id } = req.params; // Post ID
-    const userId = req.user.id; // User ID from token
+    const { id } = req.params;
+    const userId = req.user.id; 
   
     try {
       const post = await Post.findById(id);
@@ -56,10 +56,8 @@ const toggleLike = async (req, res) => {
       if (!post) return res.status(404).json({ message: "Post not found" });
   
       if (post.likes.includes(userId)) {
-        // If the user has already liked the post, remove their like
         post.likes = post.likes.filter((like) => like.toString() !== userId);
       } else {
-        // Otherwise, add their like
         post.likes.push(userId);
       }
   

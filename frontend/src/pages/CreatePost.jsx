@@ -2,9 +2,9 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function CreatePost() {
-    const [Title, setTitle] = useState();
-    const [Content, setContent] = useState();
-    const [Image, setImage] = useState();
+    const [Title, setTitle] = useState("");
+    const [Content, setContent] = useState("");
+    const [Image, setImage] = useState("");
     const navigate = useNavigate();
 
     const handleCreatePost = async (e) =>{
