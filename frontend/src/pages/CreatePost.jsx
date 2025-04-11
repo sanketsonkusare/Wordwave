@@ -10,8 +10,8 @@ export default function CreatePost() {
     const handleCreatePost = async (e) =>{
         e.preventDefault();
         const token = localStorage.getItem("token");
-
-        const response = await fetch("http://localhost:5000/posts", {
+        const API_BASE_URL = import.meta.env.VITE_API_URL || "";
+        const response = await fetch(`${API_BASE_URL}/posts`, {
             method: "POST",
             headers: {
                 "content-Type": "application/json",

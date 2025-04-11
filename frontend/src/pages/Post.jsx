@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+const API_BASE_URL = import.meta.env.VITE_API_URL || "";
 
 export default function Post() {
   const { id } = useParams(); 
@@ -13,7 +14,7 @@ export default function Post() {
   const [loadingComments, setLoadingComments] = useState(true);
   
   useEffect(() => {
-    fetch(`http://localhost:5000/posts/${id}`)
+    fetch(`${API_BASE_URL}/posts/${id}`)
       .then((res) => res.json())
       .then((data) => {
         setPost(data);
@@ -38,7 +39,7 @@ export default function Post() {
     }
   
     try {
-      const response = await fetch(`http://localhost:5000/comments/${id}`, {
+      const response = await fetch(`${API_BASE_URL}/comments/${id}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -68,7 +69,7 @@ export default function Post() {
       return;
     }
     try {
-      const response = await fetch(`http://localhost:5000/comments/${commentId}`, {
+      const response = await fetch(`${API_BASE_URL}/comments/${commentId}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -90,7 +91,7 @@ export default function Post() {
     if (!token) return alert("You need to login to like the post");
   
     try {
-      const response = await fetch(`http://localhost:5000/posts/${id}/like`, {
+      const response = await fetch(`${API_BASE_URL}/posts/${id}/like`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

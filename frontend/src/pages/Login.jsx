@@ -13,7 +13,8 @@ export default function Login() {
         e.preventDefault();
 
         try {
-            const response = await fetch("http://localhost:5000/auth/login", {
+            const API_BASE_URL = import.meta.env.VITE_API_URL || "";
+            const response = await fetch(`${API_BASE_URL}/auth/login`, {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
                 body: JSON.stringify(FormData),
