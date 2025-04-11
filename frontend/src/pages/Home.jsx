@@ -24,6 +24,13 @@ export default function Home() {
               key={post._id}
               className="border p-4 py-6 rounded-3xl shadow-md hover:shadow-lg hover:scale-105 transition-transform duration-300"
             >
+              {post.image && (
+                <img
+                  src={post.image}
+                  alt={post.title}
+                  className="w-full h-48 object-cover rounded-xl mb-4"
+                />
+              )}
               <h2 className="text-xl font-semibold py-2">{post.title}</h2>
               <p className="text-gray-600">{post.content.substring(0, 100)}...</p>
             </Link>
