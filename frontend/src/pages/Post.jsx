@@ -10,6 +10,7 @@ export default function Post() {
   const token = localStorage.getItem("token");
   const userIdFromToken = token ? JSON.parse(atob(token.split(".")[1])).id : null;
   const hasLiked = userIdFromToken ? likes.map(String).includes(userIdFromToken) : false;
+  const [loadingComments, setLoadingComments] = useState(true);
   
   useEffect(() => {
     fetch(`http://localhost:5000/posts/${id}`)
@@ -18,26 +19,24 @@ export default function Post() {
         setPost(data);
         setComments(data.comments || []);
         setLikes(data.likes || []);
+        setLoadingComments(false);
       })
-      .catch((err) => console.error("Error fetching post:", err));
-
-    fetch(`http://localhost:5000/comments/${id}`)
-      .then((res) => res.json())
-      .then((data) => {
-        setComments(data || []);
-      })
-      .catch((err) => console.error("Error fetching comments", err));
+      .catch((err) => {
+        console.error("Error fetching post:", err);
+        setLoadingComments(false);
+      });
   }, [id]);
-
+  
+  if (loadingComments) return <p className="text-center mt-6">Loading comments...</p>;
   const handleCommentSubmit = async (e) => {
     e.preventDefault();
-
-    const token = localStorage.getItem("token"); 
+  
+    const token = localStorage.getItem("token");
     if (!token) {
       alert("You must be logged in to comment");
       return;
     }
-
+  
     try {
       const response = await fetch(`http://localhost:5000/comments/${id}`, {
         method: "POST",
@@ -47,17 +46,18 @@ export default function Post() {
         },
         body: JSON.stringify({ comment: newComment }),
       });
-
+  
       const data = await response.json();
-
+  
       if (response.ok) {
         setComments([data, ...comments]); 
         setNewComment("");
       } else {
-        alert(data.message);
+        alert(data.message || "Failed to add comment");
       }
     } catch (error) {
       console.error("Error adding comment:", error);
+      alert("An error occurred while adding the comment.");
     }
   };
 
@@ -116,7 +116,10 @@ export default function Post() {
 
   return (
     <div className="max-w-4xl mx-auto p-6">
-      <h1 className="text-4xl font-bold text-center my-6">{post.title}</h1> 
+      <h1 className="text-4xl font-bold text-center my-6">
+        {post.title}
+        <em className="block text-right text-gray-500 text-lg mt-2">By: {post.author.username}</em>
+      </h1> 
       <img src={post.image} alt="Blog Cover" className="w-full h-110 object-cover rounded-2xl" />
       <div className="flex justify-end">
         <div onClick={handleLike} className="mt-4 ml-auto cursor-pointer flex items-center">
@@ -142,10 +145,12 @@ export default function Post() {
                 className="border p-4 rounded-xl shadow-md bg-[#0a0018] flex flex-col justify-between text-left"
               >
                 <div className="mb-2">
-                  <strong className="block text-white mb-2">{comment.username}</strong>
+                  <strong className="block text-white mb-2">
+                    {comment.userId?.username || "Unknown"}
+                  </strong>
                   <p className="text-white-300">{comment.comment}</p>
                 </div>
-                {comment.userId === userIdFromToken && (
+                {comment.userId?._id === userIdFromToken && (
                   <button
                     onClick={() => handleDeleteComment(comment._id)}
                     className="text-red-500 hover:underline self-end"

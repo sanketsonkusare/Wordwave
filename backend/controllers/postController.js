@@ -14,7 +14,7 @@ const createPost = async (req, res) => {
             title,
             content,
             image,
-            author
+            author: req.user.id,
         });
         await newPost.save();
         res.status(201).json(newPost);
@@ -37,11 +37,16 @@ const getAllPosts = async (req, res) => {
 const getSinglePost = async (req, res) => {
     const { id } = req.params;
     try {
-        const post = await Post.findById(id);
-        if (!post) return res.status(404).json({message: "Post not found" });
-        res.status(200).json(post);
+      const post = await Post.findById(id)
+        .populate('author', 'username')
+        .populate({
+          path: 'comments',
+          populate: { path: 'userId', select: 'username' }, // Populate userId with username
+        });
+      if (!post) return res.status(404).json({ message: "Post not found" });
+      res.status(200).json(post);
     } catch (error) {
-        res.status(500).json({message: "Error fetching post", error: error.message });
+      res.status(500).json({ message: "Error fetching post", error: error.message });
     }
 };
 

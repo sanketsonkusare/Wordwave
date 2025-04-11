@@ -19,7 +19,9 @@ exports.addComment = async (req, res) => {
         const newComment = new Comment({ postId, userId, username, comment });
         await newComment.save();
 
-        res.status(201).json(newComment);
+        await Post.findByIdAndUpdate(postId, { $push: { comments: newComment._id } });
+        const populatedComment = await newComment.populate('userId', 'username');
+        res.status(201).json(populatedComment);
     } catch (error) {
         console.error("Comment Error:", error.message);
         res.status(500).json({ message: "Error adding comment", error: error.message });
